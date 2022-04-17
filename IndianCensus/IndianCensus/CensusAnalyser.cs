@@ -19,7 +19,7 @@ namespace IndianCensus
             }
             if (Path.GetExtension(csvFilePath) != ".csv")
             {
-                throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.Improper_Extension, "Improper extension");
+                throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.Improper_Extension, "Improper file extension");
             }
 
             string[] censusData = File.ReadAllLines(csvFilePath);
@@ -35,9 +35,12 @@ namespace IndianCensus
                     throw new CensusAnalyserException(CensusAnalyserException.ExceptionType.Deliminator_Not_Found, "Delimiter is not found");
                 }
                 string[] column = row.Split(',');
-                data.Add(column[0], new IndianStateCensusData(column[0], column[1], column[2], column[3]));
+                if (csvFilePath.Contains("IndiaStateCode"))
+                    data.Add(column[0], new IndianStateCensusData(new IndianStateCodeData(column[0], column[1], column[2], column[3])));
+                else
+                    data.Add(column[0], new IndianStateCensusData(column[0], column[1], column[2], column[3]));
             }
-            return data;
+            return data; ;
         }
     }
 }
